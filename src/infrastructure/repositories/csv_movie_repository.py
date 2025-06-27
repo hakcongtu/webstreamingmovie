@@ -39,6 +39,8 @@ class CsvMovieRepository(IMovieRepository):
         movies = []
         try:
             df = pd.read_csv(self.csv_file_path)
+            df.to_parquet(self.csv_file_path.replace('.csv', '.parquet'))
+            df = pd.read_parquet(self.csv_file_path.replace('.csv', '.parquet'),engine='pyarrow')
             
             for _, row in df.iterrows():
                 # Parse genres and tags from pipe-separated strings
