@@ -2,11 +2,9 @@
 Authentication Router - Presentation Layer
 FastAPI routes for authentication operations
 """
-import sqlalchemy
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from application.use_cases.auth_use_cases import AuthUseCase
 from application.services.auth_service import AuthService
@@ -20,8 +18,7 @@ from application.dtos.auth_schemas import (
     AuthSuccessDto,
     LogoutResponseDto
 )
-from infrastructure.repositories.sql_user_repository import SqlUserRepository
-from infrastructure.database.database import get_db
+from infrastructure.repositories.csv_user_repository import CsvUserRepository
 
 # Create router instance
 router = APIRouter(prefix="/api/auth", tags=["authentication"])
@@ -30,16 +27,16 @@ router = APIRouter(prefix="/api/auth", tags=["authentication"])
 security = HTTPBearer(scheme_name="bearerAuth")
 
 # Dependency injection for repository, service and use case
-def get_user_repository(session: AsyncSession = Depends(get_db)) -> SqlUserRepository:
+def get_user_repository() -> CsvUserRepository:
     """Dependency to get user repository instance"""
-    return SqlUserRepository(session)
+    return CsvUserRepository()
 
 def get_auth_service() -> AuthService:
     """Dependency to get authentication service instance"""
     return AuthService()
 
 def get_auth_use_case(
-    repository: SqlUserRepository = Depends(get_user_repository),
+    repository: CsvUserRepository = Depends(get_user_repository),
     auth_service: AuthService = Depends(get_auth_service)
 ) -> AuthUseCase:
     """Dependency to get authentication use case instance"""
