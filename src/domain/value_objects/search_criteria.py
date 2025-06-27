@@ -18,6 +18,9 @@ class SearchCriteria:
     year: Optional[int] = None
     min_rating: Optional[float] = None
     max_rating: Optional[float] = None
+    country: Optional[str] = None
+    language: Optional[str] = None
+    status: Optional[str] = None
 
     def __post_init__(self):
         """Validation rules for search criteria"""
@@ -46,7 +49,8 @@ class SearchCriteria:
     def is_empty(self) -> bool:
         """Check if search criteria is empty"""
         return all(value is None for value in [
-            self.title, self.genre, self.year, self.min_rating, self.max_rating
+            self.title, self.genre, self.year, self.min_rating, self.max_rating,
+            self.country, self.language, self.status
         ])
 
     def has_any_filters(self) -> bool:
@@ -65,6 +69,18 @@ class SearchCriteria:
         """Check if has rating range filter"""
         return self.min_rating is not None or self.max_rating is not None
 
+    def has_country_filter(self) -> bool:
+        """Check if has country filter"""
+        return self.country is not None and self.country.strip()
+
+    def has_language_filter(self) -> bool:
+        """Check if has language filter"""
+        return self.language is not None and self.language.strip()
+
+    def has_status_filter(self) -> bool:
+        """Check if has status filter"""
+        return self.status is not None and self.status.strip()
+
     def get_normalized_title(self) -> str:
         """Get normalized title for search"""
         return self.title.lower().strip() if self.title else ""
@@ -72,4 +88,16 @@ class SearchCriteria:
     def get_normalized_genre(self) -> str:
         """Get normalized genre for filter"""
         return self.genre.lower().strip() if self.genre else ""
+
+    def get_normalized_country(self) -> str:
+        """Get normalized country for filter"""
+        return self.country.lower().strip() if self.country else ""
+
+    def get_normalized_language(self) -> str:
+        """Get normalized language for filter"""
+        return self.language.lower().strip() if self.language else ""
+
+    def get_normalized_status(self) -> str:
+        """Get normalized status for filter"""
+        return self.status.lower().strip() if self.status else ""
 
