@@ -46,9 +46,12 @@ class SearchCriteria:
     def is_empty(self) -> bool:
         """Check if search criteria is empty"""
         return all(value is None for value in [
-            self.title, self.genre, self.year, self.country,
-            self.language, self.status, self.min_rating, self.max_rating
+            self.title, self.genre, self.year, self.min_rating, self.max_rating
         ])
+
+    def has_any_filters(self) -> bool:
+        """Check if has any filters"""
+        return not self.is_empty()
 
     def has_title_search(self) -> bool:
         """Check if has title search"""
