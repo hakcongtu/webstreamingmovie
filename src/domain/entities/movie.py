@@ -75,13 +75,31 @@ class Movie:
         """Business logic: Check if movie is popular based on ratings count"""
         return self.ratings_count >= 100
 
-    def has_genre(self, genre: str) -> bool:
-        """Business logic: Check if movie matches genre"""
-        return any(g.lower() == genre.lower() for g in self.genres)
+    def get_primary_genre(self) -> str:
+        """Business logic: Get primary genre (first genre)"""
+        return self.genres[0] if self.genres else "Unknown"
 
-    def has_tag(self, tag: str) -> bool:
-        """Business logic: Check if movie has specific tag"""
-        return any(t.lower() == tag.lower() for t in self.tags)
+    def get_positive_rating_percentage(self) -> float:
+        """Business logic: Calculate percentage of positive ratings (3-5 stars)"""
+        if self.ratings_count == 0:
+            return 0.0
+        
+        positive_ratings = (
+            self.three_to_four_ratings_count +
+            self.four_to_five_ratings_count
+        )
+        return round((positive_ratings / self.ratings_count) * 100, 2)
+
+    def get_negative_rating_percentage(self) -> float:
+        """Business logic: Calculate percentage of negative ratings (1-2 stars)"""
+        if self.ratings_count == 0:
+            return 0.0
+        
+        negative_ratings = (
+            self.zero_to_one_ratings_count +
+            self.one_to_two_ratings_count
+        )
+        return round((negative_ratings / self.ratings_count) * 100, 2)
 
     def get_rating_distribution(self) -> dict:
         """Business logic: Get rating distribution as percentages"""
@@ -101,6 +119,14 @@ class Movie:
             "3-4": round((self.three_to_four_ratings_count / self.ratings_count) * 100, 2),
             "4-5": round((self.four_to_five_ratings_count / self.ratings_count) * 100, 2)
         }
+
+    def has_genre(self, genre: str) -> bool:
+        """Business logic: Check if movie matches genre"""
+        return any(g.lower() == genre.lower() for g in self.genres)
+
+    def has_tag(self, tag: str) -> bool:
+        """Business logic: Check if movie has specific tag"""
+        return any(t.lower() == tag.lower() for t in self.tags)
 
     def matches_search_criteria(self, title_query: str = None, genre_filter: str = None, tag_filter: str = None) -> bool:
         """Business logic: Check if movie matches search criteria"""

@@ -6,7 +6,6 @@ import time
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Depends, Path, Query as QueryParam
 from fastapi.responses import JSONResponse
-from infrastructure.repositories.csv_movie_repository import CsvMovieRepository
 from domain.entities.movie import Movie
 from application.use_cases.movie_use_cases import MovieUseCase
 from application.dtos.movie_schemas import (
@@ -19,12 +18,15 @@ from application.dtos.movie_schemas import (
     MovieDto,
     MovieCreateDto
 )
+from infrastructure.repositories.csv_movie_repository import CsvMovieRepository
+
 # Create router instance
 router = APIRouter(prefix="/api/movies", tags=["movies"])
 
 # Dependency injection for repository and use case
-def get_movie_repository():
-    return 
+def get_movie_repository() -> CsvMovieRepository:
+    """Dependency to get CSV movie repository instance"""
+    return CsvMovieRepository()
 
 def get_movie_use_case(
     repository: CsvMovieRepository = Depends(get_movie_repository)

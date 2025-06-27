@@ -50,6 +50,11 @@ class MovieMapper:
             
             # Computed fields
             is_highly_rated=movie.is_highly_rated(),
+            is_popular=movie.is_popular(),
+            primary_genre=movie.get_primary_genre(),
+            rating_distribution=movie.get_rating_distribution(),
+            positive_rating_percentage=movie.get_positive_rating_percentage(),
+            negative_rating_percentage=movie.get_negative_rating_percentage()
         )
 
     @staticmethod
@@ -62,7 +67,11 @@ class MovieMapper:
             average_rating=movie.average_rating,
             ratings_count=movie.ratings_count,
             tags=movie.tags,
-            is_highly_rated=movie.is_highly_rated()
+            latest_rating=movie.latest_rating,
+            is_highly_rated=movie.is_highly_rated(),
+            is_popular=movie.is_popular(),
+            primary_genre=movie.get_primary_genre(),
+            positive_rating_percentage=movie.get_positive_rating_percentage()
         )
 
     @staticmethod
