@@ -165,7 +165,7 @@ class MovieStatsDto(BaseModel):
     total_tags: int = Field(..., description="Total number of tags")
     average_rating: float = Field(..., description="Average rating across all movies")
     total_ratings: int = Field(..., description="Total number of ratings")
-    highly_rated_movies: int = Field(..., description="Number of highly rated movies (8.0+)")
+    highly_rated_movies: int = Field(..., description="Number of highly rated movies (4.0+)")
     popular_movies: int = Field(..., description="Number of popular movies")
     most_popular: List[MovieSummaryDto] = Field(..., description="Most popular movies")
     highest_rated: List[MovieSummaryDto] = Field(..., description="Highest rated movies")

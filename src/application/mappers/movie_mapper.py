@@ -138,8 +138,8 @@ class MovieMapper:
             highly_rated_movies=highly_rated_count,
             popular_movies=popular_count,
             most_popular=MovieMapper.to_summary_dto_list(most_popular),
-            highest_rated=MovieMapper.to_summary_dto_list(highest_rated),
-            recent_movies=MovieMapper.to_summary_dto_list(recent_movies)
+            highest_rated=MovieMapper.to_summary_dto_list(highest_rated)
+            # recent_movies=MovieMapper.to_summary_dto_list(recent_movies)
         )
 
     @staticmethod
