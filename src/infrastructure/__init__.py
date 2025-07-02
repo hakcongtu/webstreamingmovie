@@ -1,0 +1,1 @@
+# Infrastructure Layer - External Concerns (Data Access, File I/O, etc.) 
