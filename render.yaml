@@ -1,0 +1,16 @@
+services:
+  # Web Service - FastAPI Application
+  - type: web
+    name: movie-streaming-api
+    env: python
+    plan: free  # Change to 'starter' or 'standard' for production
+    buildCommand: pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
+    startCommand: python start_render.py
+    envVars:
+      - key: PYTHONPATH
+        value: /opt/render/project/src/src
+      - key: CSV_FILE_PATH
+        value: /opt/render/project/src/data/movies.csv
+      - key: ENVIRONMENT
+        value: production
+    autoDeploy: true 
