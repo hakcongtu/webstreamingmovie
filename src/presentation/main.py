@@ -197,6 +197,9 @@ async def startup_event():
     print("🔄 Alternative docs: http://localhost:8000/redoc")
     print("💓 Health check: http://localhost:8000/health")
     print("=" * 60)
+    # Seed data
+    from src.infrastructure.database.seed_data import seed_users
+    await seed_users()
 
 # Shutdown event
 @app.on_event("shutdown")
