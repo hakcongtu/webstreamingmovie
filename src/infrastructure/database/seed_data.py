@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.infrastructure.database.database import AsyncSessionLocal
 from src.infrastructure.database.models import UserModel
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import text
 import hashlib
 
 def hash_password(password: str) -> str:
@@ -11,7 +12,7 @@ def hash_password(password: str) -> str:
 
 async def seed_users():
     async with AsyncSessionLocal() as session:
-        result = await session.execute("SELECT COUNT(*) FROM users")
+        result = await session.execute(text("SELECT COUNT(*) FROM users"))
         count = result.scalar()
         if count == 0:
             admin = UserModel(
