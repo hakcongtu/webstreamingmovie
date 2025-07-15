@@ -1,0 +1,189 @@
+# Docker Compose for Movie Streaming API
+# Orchestrates FastAPI backend instances with Nginx load balancer
+
+version: '3.8'
+
+services:
+  # Nginx Load Balancer
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: movie_api_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - movie_api_1
+      - movie_api_2
+      - movie_api_3
+    networks:
+      - movie_api_network
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # FastAPI Backend Instance 1
+  movie_api_1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: movie_api_1
+    restart: unless-stopped
+    environment:
+      - PYTHONPATH=/app
+      - CSV_FILE_PATH=/app/data/movies.csv
+    volumes:
+      - ./data:/app/data:ro
+    networks:
+      - movie_api_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+  # FastAPI Backend Instance 2
+  movie_api_2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: movie_api_2
+    restart: unless-stopped
+    environment:
+      - PYTHONPATH=/app
+      - CSV_FILE_PATH=/app/data/movies.csv
+    volumes:
+      - ./data:/app/data:ro
+    networks:
+      - movie_api_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+  # FastAPI Backend Instance 3
+  movie_api_3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: movie_api_3
+    restart: unless-stopped
+    environment:
+      - PYTHONPATH=/app
+      - CSV_FILE_PATH=/app/data/movies.csv
+    volumes:
+      - ./data:/app/data:ro
+    networks:
+      - movie_api_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+  # Development instance (optional, for development only)
+  movie_api_dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: movie_api_dev
+    restart: unless-stopped
+    ports:
+      - "8000:8000"  # Direct access for development
+    environment:
+      - PYTHONPATH=/app
+      - CSV_FILE_PATH=/app/data/movies.csv
+    volumes:
+      - ./data:/app/data:ro
+      - .:/app  # Mount source code for development
+    networks:
+      - movie_api_network
+    profiles:
+      - dev  # Only start with --profile dev
+    command: ["uvicorn", "src.presentation.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+  # Monitoring - Nginx Prometheus Exporter (optional)
+  nginx_exporter:
+    image: nginx/nginx-prometheus-exporter:0.11
+    container_name: nginx_exporter
+    restart: unless-stopped
+    ports:
+      - "9113:9113"
+    command:
+      - '-nginx.scrape-uri=http://nginx/nginx_status'
+    depends_on:
+      - nginx
+    networks:
+      - movie_api_network
+    profiles:
+      - monitoring
+
+networks:
+  movie_api_network:
+    driver: bridge
+    name: movie_api_network
+
+volumes:
+  nginx_logs:
+    name: nginx_logs
+
+# Docker Compose commands:
+# 
+# Start production environment:
+# docker-compose up -d
+# 
+# Start with development instance:
+# docker-compose --profile dev up -d
+# 
+# Start with monitoring:
+# docker-compose --profile monitoring up -d
+# 
+# Scale backend instances:
+# docker-compose up -d --scale movie_api_1=2 --scale movie_api_2=2
+# 
+# View logs:
+# docker-compose logs -f
+# 
+# Stop all services:
+# docker-compose down
+# 
+# Rebuild and restart:
+# docker-compose up -d --build 
