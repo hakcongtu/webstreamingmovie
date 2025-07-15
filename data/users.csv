@@ -1,0 +1,5 @@
+id,email,username,hashed_password,full_name,is_active,is_superuser,created_at,updated_at,last_login
+admin-001,admin@movieapi.com,admin,$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewVyVBULcV5LlL8q,System Administrator,True,True,2024-01-01T00:00:00,2024-01-01T00:00:00,
+demo-001,demo@movieapi.com,demo,$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewVyVBULcV5LlL8q,Demo User,True,False,2024-01-01T00:00:00,2024-01-01T00:00:00,
+efb16b57-0be1-49a3-a0e0-1aa78f2fe4f1,user@example.com,string,$2b$12$VKWB/kR.z5UCYJBNebrNsuBlQqfUfrPAARhY7.4Pv9kfDY1EvN/yy,string,True,False,2025-06-20T09:56:51.339970,2025-06-20T09:57:05.331181,2025-06-20T09:57:05.331181
+e635d55d-a6b4-468c-a544-4b72c68ba481,user1@example.com,admin1,$2b$12$4UxuO55e635xmbt/n/shn.tCu1VnJGxcgWej50rqma.ItYWSgpRJW,Admin,True,False,2025-06-24T01:45:22.748515,2025-06-24T01:48:11.281240,2025-06-24T01:48:11.281240
