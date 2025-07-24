@@ -16,7 +16,8 @@ from application.dtos.auth_schemas import (
     UserListResponseDto,
     UserStatsDto,
     AuthSuccessDto,
-    LogoutResponseDto
+    LogoutResponseDto,
+    GrantSuperuserDto
 )
 from infrastructure.repositories.sqlite_user_repository import SqliteUserRepository
 
@@ -224,6 +225,39 @@ async def get_user_stats(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get user stats: {str(e)}"
+        )
+
+
+@router.post(
+    "/grant-superuser",
+    response_model=AuthSuccessDto,
+    summary="Grant superuser privileges to a user",
+    description="Grant superuser privileges to a user by user ID (admin only)",
+    dependencies=[Depends(security)]
+)
+async def grant_superuser(
+    data: GrantSuperuserDto,
+    current_user: UserResponseDto = Depends(get_current_superuser),
+    auth_use_case: AuthUseCase = Depends(get_auth_use_case)
+):
+    """Grant superuser privileges to a user (admin only)"""
+    try:
+        success, message, user_response = await auth_use_case.grant_superuser(data.user_id)
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=message
+            )
+        return AuthSuccessDto(
+            message=message,
+            user=user_response
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Grant superuser failed: {str(e)}"
         )
 
 
