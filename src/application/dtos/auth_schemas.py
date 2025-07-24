@@ -136,3 +136,9 @@ class GrantSuperuserDto(BaseModel):
     Grant Superuser DTO
     """
     user_id: str = Field(..., description="User ID to grant superuser privileges") 
+    
+class TakePrivilegesDto(BaseModel):
+    """
+    Take Privileges DTO
+    """
+    user_id: str = Field(..., description="User ID to take privileges") 
