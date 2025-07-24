@@ -136,4 +136,19 @@ class User:
             created_at=self.created_at,
             updated_at=datetime.utcnow(),
             last_login=self.last_login
-        ) 
+        )
+    
+    def make_user(self) -> 'User':
+        """Business logic: Take superuser privileges"""
+        return User(
+            id=self.id,
+            email=self.email,
+            username=self.username,
+            hashed_password=self.hashed_password,
+            full_name=self.full_name,
+            is_active=self.is_active,
+            is_superuser=False,
+            created_at=self.created_at,
+            updated_at=datetime.utcnow(),
+            last_login=self.last_login
+        )
