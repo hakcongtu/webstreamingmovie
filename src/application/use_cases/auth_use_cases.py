@@ -14,7 +14,9 @@ from application.dtos.auth_schemas import (
     TokenResponseDto,
     UserListResponseDto,
     UserStatsDto,
-    AuthErrorDto
+    AuthErrorDto,
+    GrantSuperuserDto,
+    TakePrivilegesDto
 )
 
 
@@ -258,3 +260,30 @@ class AuthUseCase:
             return True, "Superuser privileges granted", user_response
         except Exception as e:
             return False, f"Failed to grant superuser: {str(e)}", None 
+        
+    async def take_privileges(self, user_id: str) -> tuple[bool, str, Optional[UserResponseDto]]:
+        """
+        Take superuser privileges from a user by user_id
+        Returns: (success, message, user_response)
+        """
+        try:
+            user = await self._user_repository.find_by_id(user_id)
+            if not user:
+                return False, "User not found", None
+            if not user.is_superuser:
+                return False, "User is not a superuser", None
+            updated_user = user.make_user()
+            updated_user = await self._user_repository.update_user(updated_user)
+            user_response = UserResponseDto(
+                id=updated_user.id,
+                email=updated_user.email,
+                username=updated_user.username,
+                full_name=updated_user.full_name,
+                is_active=updated_user.is_active,
+                is_superuser=updated_user.is_superuser,
+                created_at=updated_user.created_at,
+                last_login=updated_user.last_login
+            )
+            return True, "Superuser privileges taken", user_response
+        except Exception as e:
+            return False, f"Failed to take privileges: {str(e)}", None
