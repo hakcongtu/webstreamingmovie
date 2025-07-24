@@ -129,3 +129,10 @@ class UserStatsDto(BaseModel):
     inactive_users: int = Field(..., description="Number of inactive users")
     superusers: int = Field(..., description="Number of superusers")
     recent_registrations: int = Field(..., description="Registrations in last 30 days") 
+
+
+class GrantSuperuserDto(BaseModel):
+    """
+    Grant Superuser DTO
+    """
+    user_id: str = Field(..., description="User ID to grant superuser privileges") 
