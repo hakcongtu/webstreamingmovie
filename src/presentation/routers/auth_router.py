@@ -17,7 +17,8 @@ from application.dtos.auth_schemas import (
     UserStatsDto,
     AuthSuccessDto,
     LogoutResponseDto,
-    GrantSuperuserDto
+    GrantSuperuserDto,
+    TakePrivilegesDto
 )
 from infrastructure.repositories.sqlite_user_repository import SqliteUserRepository
 
@@ -260,6 +261,37 @@ async def grant_superuser(
             detail=f"Grant superuser failed: {str(e)}"
         )
 
+@router.post(
+    "/take-privileges",
+    response_model=AuthSuccessDto,
+    summary="Take superuser privileges from a user",
+    description="Take superuser privileges from a user by user ID (admin only)",
+    dependencies=[Depends(security)]
+)
+async def take_privileges(
+    data: TakePrivilegesDto,
+    current_user: UserResponseDto = Depends(get_current_superuser),
+    auth_use_case: AuthUseCase = Depends(get_auth_use_case)
+):
+    """Take superuser privileges from a user (admin only)"""
+    try:
+        success, message, user_response = await auth_use_case.take_privileges(data.user_id)
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=message
+            )
+        return AuthSuccessDto(
+            message=message,
+            user=user_response
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Take privileges failed: {str(e)}"
+        )
 
 @router.get(
     "/test-credentials",
